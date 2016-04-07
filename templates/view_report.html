@@ -1,0 +1,24 @@
+<a href="?action=list&pid={{ PID }}">Back</a>
+<div id="this_report_title" style="margin:40px 0 8px;padding:5px 3px;color:#800000;font-size:18px;font-weight:bold;">{{ report.report_name }}</div>
+{% if results is empty %}
+    <p>There are currently no results for this report.</p>
+{% else %}
+<table id="report_table" class="dt2" style="margin:0;font-family:Verdana;font-size:11px;">
+    <thead>
+        <tr class="hdr2">
+        {% for header in results[0]|keys %}
+            <th>{{ header }}</th>
+        {% endfor %}
+        </tr>
+    </thead>
+        <tbody>
+        {% for row in results %}
+            <tr class="{{ cycle(['odd', 'even'], loop.index0) }}">
+            {% for field in row %}
+                <td>{{ field }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

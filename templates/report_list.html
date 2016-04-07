@@ -1,0 +1,12 @@
+<h3>Custom SQL Report List</h3>
+{% if reports is empty %}
+<p>There are currently no defined SQL reports for this project.</p>
+{% else %}
+<ul> 
+    {% for report in reports %}
+    <li>
+        <a href="?action=view&rid={{ report.record_id }}&pid={{ PID }}">{{ report.report_name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

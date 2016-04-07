@@ -1,0 +1,10 @@
+syntax: glob
+
+# Temporary files used by the vi editor.
+.*.swp
+
+# Plugin configuration file
+config.ini
+
+# Temp dir
+tmp/*
