@@ -11,15 +11,18 @@ class ViewReportController extends PluginController {
             $this->CONFIG['report_config_pid'],
             $this->CONN
         );
+        $report_info = $reports->get_record_by('record', $this->GET['rid']);
 
-        // 2. Apply access constraints
-        
+        // 2. Verify correct project scope
+        if($report_info['project_id'] != $this->GET['pid']) {
+            return $this->render('not_found.html', array(
+                'PID' => $this->GET['pid']
+            ));
+        }
 
         // 3. Run preliminary SQL (if present) 
 
-
         // 4. Run report SQL
-        $report_info = $reports->get_record_by('record', $this->GET['rid']);
         $results = $this->execute_query($report_info['report_sql']);
 
         return $this->render('view_report.html', array(
