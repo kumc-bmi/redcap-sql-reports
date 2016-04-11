@@ -1,7 +1,9 @@
 <?php
 require_once(FRAMEWORK_ROOT.'PluginController.php');
+require_once('ReportController.php');
 
-class ViewReportController extends PluginController {
+
+class ViewReportController extends ReportController {
 
     protected function handleGET() {
         require_once(FRAMEWORK_ROOT.'ProjectModel.php');
@@ -12,6 +14,11 @@ class ViewReportController extends PluginController {
             $this->CONN
         );
         $report_info = $reports->get_record_by('record', $this->GET['rid']);
+
+        // Verify that user meet access constraints
+        if(!$this->is_accessable_by($report_info, $this->get_user_info($this->USER))) {
+            return $this->render('not_found.html', array('PID' => $this->GET['pid']));
+        }
 
         // 2. Verify correct project scope
         if($report_info['project_id'] != $this->GET['pid']) {
@@ -65,7 +72,8 @@ class ViewReportController extends PluginController {
 
     /*
      * TODO: This was hijacked directly from framework/ProjectModel.php and
-     * probably doesn't belong here in the long run, but it's a private method.
+     * probably doesn't belong here in the long run, but it's a private method
+     * in ProjectModel and probably should remain that way.
      */
     protected function execute_query($query, $bind_params) {
 
