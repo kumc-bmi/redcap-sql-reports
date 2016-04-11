@@ -1,19 +1,22 @@
 <a href="?action=list&pid={{ PID }}">&lsaquo; Back to Report List</a>
 <div id="this_report_title" style="margin:40px 0 8px;padding:5px 3px;color:#800000;font-size:18px;font-weight:bold;">{{ report.name }}</div>
 <p>{{ report.description }}</p>
-{% if results is empty %}
-<p>There are currently <strong>no results</strong> for this report.</p>
+<hr/>
+{% for sub_title, sub_results in results %}
+<div id="this_report_title" style="margin:40px 0 8px;padding:5px 3px;color:#800000;font-size:14px;font-weight:bold;">{{ sub_title }}</div>
+{% if sub_results is empty %}
+<p>There are currently <strong>no results</strong> for this sub-report.</p>
 {% else %}
 <table id="report_table" class="dt2" style="margin:0;font-family:Verdana;font-size:11px;">
     <thead>
         <tr class="hdr2">
-        {% for header in results[0]|keys %}
+        {% for header in sub_results[0]|keys %}
             <th>{{ header }}</th>
         {% endfor %}
         </tr>
     </thead>
         <tbody>
-        {% for row in results %}
+        {% for row in sub_results %}
             <tr class="{{ cycle(['odd', 'even'], loop.index0) }}">
             {% for field in row %}
                 <td>{{ field }}</td>
@@ -23,3 +26,4 @@
     </tbody>
 </table>
 {% endif %}
+{% endfor %}

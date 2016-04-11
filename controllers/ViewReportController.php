@@ -20,21 +20,52 @@ class ViewReportController extends PluginController {
             ));
         }
 
-        // 3. Run preliminary SQL (if present) 
+        // 3. Run preliminary SQL (if present)
+        if(isset($report_info['preliminary_sql']) and $report_info['preliminary_sql']) {
+            $prelim_results = $this->execute_query($report_info['preliminary_sql']);
+            $results = array();
+            foreach($prelim_results as $prelim_result) {
+                $formatted_sql = $this->replace_labels_with_values(
+                    $report_info['report_sql'],
+                    $prelim_result
+                );
+                $results[$prelim_result['table_title']] = $this->execute_query($formatted_sql);
+            }
 
+            return $this->render('view_sub_reports.html', array(
+                'report' => $report_info,
+                'results' => $results,
+                'PID' => $this->GET['pid']
+            ));
         // 4. Run report SQL
-        $results = $this->execute_query($report_info['report_sql']);
+        } else {
+            $results = $this->execute_query($report_info['report_sql']);
 
-        return $this->render('view_report.html', array(
-            'report' => $report_info,
-            'results' => $results,
-            'PID' => $this->GET['pid']
-        ));
+            return $this->render('view_report.html', array(
+                'report' => $report_info,
+                'results' => $results,
+                'PID' => $this->GET['pid']
+            ));
+        }
+    }
+
+    private function replace_labels_with_values($text, $fields) {
+        $pattern = '\[[0-9a-z_]*]\[[0-9a-z_]*]|\[[0-9a-z_]*]';
+        preg_match_all('/'.$pattern.'/U', $text, $matches);
+        $matches = array_unique($matches);
+        foreach($matches[0] as $match) {
+            $text = str_replace(
+                $match,
+                $fields[substr($match,1,-1)],
+                $text
+            );
+        }
+        return $text;
     }
 
     /*
      * TODO: This was hijacked directly from framework/ProjectModel.php and
-     * probably doesn't belong here in the long run.
+     * probably doesn't belong here in the long run, but it's a private method.
      */
     protected function execute_query($query, $bind_params) {
 

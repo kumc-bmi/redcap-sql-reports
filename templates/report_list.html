@@ -5,7 +5,7 @@
 <ul> 
     {% for report in reports %}
     <li>
-        <a href="?action=view&rid={{ report.record_id }}&pid={{ PID }}">{{ report.report_name }}</a>
+        <a href="?action=view&rid={{ report.record_id }}&pid={{ PID }}">{{ report.name }}</a>
     </li>
     {% endfor %}
 </ul>
