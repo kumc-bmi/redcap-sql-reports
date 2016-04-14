@@ -1,6 +1,6 @@
 <?php
 require_once(FRAMEWORK_ROOT.'PluginController.php');
-//require_once('/srv/www/htdocs-insecure/redcap/plugins/framework/PluginController.php');
+
 
 class ReportController extends PluginController {
 
@@ -11,6 +11,7 @@ class ReportController extends PluginController {
         $user = array('user'=>$username);
         $user_rights = REDCap::getUserRights($username);
         $user['role'] = $user_rights[$username]['role_name'];
+        $user['group_id'] = $user_rights[$username]['group_id'];
         if ($user_rights[$username]['group_id']) {
             $user['group'] = REDCap::getGroupNames(
                 False,
@@ -27,7 +28,9 @@ class ReportController extends PluginController {
         $mrc = $this->meets_constraint($user, $report, 'role');
         $mgc = $this->meets_constraint($user, $report, 'group');
 
-        if(isset($report['handle_as']) and $report['handle_as'] == $this->AS_OR) {
+        if(isset($report['handle_as']) 
+            and $report['handle_as'] == $this->AS_OR) 
+        {
             return ($muc or $mrc or $mgc);
         } else {
             return ($muc and $mrc and $mgc);
@@ -39,7 +42,9 @@ class ReportController extends PluginController {
             $users = explode("\n", $report[$type.'_access']);
             $users = array_map(trim, $users);
             $meets_constraint =  in_array($user[$type], $users);
-        } elseif(isset($report['handle_as']) and $report['handle_as'] == $this->AS_OR) {
+        } elseif(isset($report['handle_as']) 
+            and $report['handle_as'] == $this->AS_OR)
+        {
             $meets_constraint = False;
         } else {
             $meets_constraint = True;

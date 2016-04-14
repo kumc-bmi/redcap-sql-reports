@@ -15,23 +15,25 @@ class ViewReportController extends ReportController {
         );
         $report_info = $reports->get_record_by('record', $this->GET['rid']);
 
-        // Verify that user meet access constraints
-        if(!$this->is_accessable_by($report_info, $this->get_user_info($this->USER))) {
-            return $this->render('not_found.html', array('PID' => $this->GET['pid']));
-        }
-
-        // 2. Verify correct project scope
+        // 2. Verify valid project scope
         if($report_info['project_id'] != $this->GET['pid']) {
             return $this->render('not_found.html', array(
                 'PID' => $this->GET['pid']
             ));
         }
 
-        // 3. Run preliminary SQL (if present)
+        // 3. Verify that user meet access constraints
+        $user_info = $this->get_user_info($this->USER);
+        if(!$this->is_accessable_by($report_info, $user_info)) {
+            return $this->render('not_found.html', array('PID' => $this->GET['pid']));
+        }
+
+        // 4. Run preliminary SQL (if present)
         if(isset($report_info['preliminary_sql']) and $report_info['preliminary_sql']) {
             $prelim_results = $this->execute_query($report_info['preliminary_sql']);
             $results = array();
             foreach($prelim_results as $prelim_result) {
+                $prelim_result['__GROUPID__'] = $user_info['group_id'];
                 $formatted_sql = $this->replace_labels_with_values(
                     $report_info['report_sql'],
                     $prelim_result
@@ -44,9 +46,13 @@ class ViewReportController extends ReportController {
                 'results' => $results,
                 'PID' => $this->GET['pid']
             ));
-        // 4. Run report SQL
+        // 5. Run report SQL
         } else {
-            $results = $this->execute_query($report_info['report_sql']);
+            $formatted_sql = $this->replace_labels_with_values(
+                $report_info['report_sql'],
+                array('__GROUPID__'=>$user_info['group_id'])
+            );
+            $results = $this->execute_query($formatted_sql);
 
             return $this->render('view_report.html', array(
                 'report' => $report_info,
@@ -57,7 +63,7 @@ class ViewReportController extends ReportController {
     }
 
     private function replace_labels_with_values($text, $fields) {
-        $pattern = '\[[0-9a-z_]*]\[[0-9a-z_]*]|\[[0-9a-z_]*]';
+        $pattern = '\[[0-9a-zA-Z_]*]\[[0-9a-zA-Z_]*]|\[[0-9a-zA-Z_]*]';
         preg_match_all('/'.$pattern.'/U', $text, $matches);
         $matches = array_unique($matches);
         foreach($matches[0] as $match) {
