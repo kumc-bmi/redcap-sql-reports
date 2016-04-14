@@ -25,12 +25,19 @@ class ViewReportController extends ReportController {
         // 3. Verify that user meet access constraints
         $user_info = $this->get_user_info($this->USER);
         if(!$this->is_accessable_by($report_info, $user_info)) {
-            return $this->render('not_found.html', array('PID' => $this->GET['pid']));
+            return $this->render(
+                'not_found.html',
+                array('PID' => $this->GET['pid'])
+            );
         }
 
-        // 4. Run preliminary SQL (if present)
-        if(isset($report_info['preliminary_sql']) and $report_info['preliminary_sql']) {
-            $prelim_results = $this->execute_query($report_info['preliminary_sql']);
+        // 4a. Preliminary SQL exists
+        if(isset($report_info['preliminary_sql'])
+            and $report_info['preliminary_sql'])
+        {
+            $prelim_results = $this->execute_query(
+                $report_info['preliminary_sql']
+            );
             $results = array();
             foreach($prelim_results as $prelim_result) {
                 $prelim_result['__GROUPID__'] = $user_info['group_id'];
@@ -38,15 +45,16 @@ class ViewReportController extends ReportController {
                     $report_info['report_sql'],
                     $prelim_result
                 );
-                $results[$prelim_result['table_title']] = $this->execute_query($formatted_sql);
+                $results[$prelim_result['table_title']] = $this->execute_query(
+                    $formatted_sql
+                );
             }
-
             return $this->render('view_sub_reports.html', array(
                 'report' => $report_info,
                 'results' => $results,
                 'PID' => $this->GET['pid']
             ));
-        // 5. Run report SQL
+        // 4b. Only Report SQL
         } else {
             $formatted_sql = $this->replace_labels_with_values(
                 $report_info['report_sql'],
@@ -81,7 +89,7 @@ class ViewReportController extends ReportController {
      * probably doesn't belong here in the long run, but it's a private method
      * in ProjectModel and probably should remain that way.
      */
-    protected function execute_query($query, $bind_params) {
+    private function execute_query($query, $bind_params) {
 
         $fields = $results = array();
         $stmt = $this->CONN->stmt_init();
