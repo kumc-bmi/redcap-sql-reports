@@ -32,7 +32,10 @@ require_once(
     .'/lib/Twig/Autoloader.php'
 );
 Twig_Autoloader::register();
-$twig_loader = new Twig_Loader_Filesystem('./templates');
+$twig_loader = new Twig_Loader_Filesystem(array(
+    './templates',
+    FRAMEWORK_ROOT.'templates'
+));
 $twig = new Twig_Environment($twig_loader, array());
 
 // Query router for relavent controller based on plugin $_REQUEST vars
@@ -40,7 +43,11 @@ require_once('routes.php');
 $ControllerClass = route($_REQUEST);
 
 // Include and instantiate controller class
-require_once('controllers/'.$ControllerClass.'.php');
+if(file_exists('controllers/'.$ControllerClass.'.php')) {
+    require_once('controllers/'.$ControllerClass.'.php');
+} else {
+    require_once(FRAMEWORK_ROOT.'controllers/'.$ControllerClass.'.php');
+}
 $controller = new $ControllerClass(
     $_GET,
     $_POST,
