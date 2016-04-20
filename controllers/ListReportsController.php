@@ -3,7 +3,7 @@ require_once(FRAMEWORK_ROOT.'PluginController.php');
 require_once('ReportController.php');
 
 
-class ReportListController extends ReportController {
+class ListReportsController extends ReportController {
 
     protected $AS_OR = 0;
     protected $AS_AND = 1;

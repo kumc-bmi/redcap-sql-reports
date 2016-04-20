@@ -1,9 +1,9 @@
 <?php
-// Route actions ot controllers based on request parameters.
+// Route actions to controllers based on request parameters.
 function route($REQUEST) {
     switch($REQUEST['action']) {
         case 'list':
-            return 'ReportListController';
+            return 'ListReportsController';
         case 'view':
             return 'ViewReportController';
         default:
