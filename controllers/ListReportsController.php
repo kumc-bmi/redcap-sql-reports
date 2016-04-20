@@ -2,11 +2,13 @@
 require_once(FRAMEWORK_ROOT.'PluginController.php');
 require_once('ReportController.php');
 
+define('REPORT_COMPLETE', 2);
 
+
+/**
+ * Retrieve a list of SQL Reports available to this user.
+ */
 class ListReportsController extends ReportController {
-
-    protected $AS_OR = 0;
-    protected $AS_AND = 1;
 
     protected function handleGET() {
         require_once(FRAMEWORK_ROOT.'ProjectModel.php');
@@ -23,16 +25,17 @@ class ListReportsController extends ReportController {
 
         $user = $this->get_user_info($this->USER);
         
-        // Limit by access constraints
-        $restricted_report_info = array();
+        $available_reports = array();
         foreach($report_info as $report) {
-            if($this->is_accessable_by($report, $user)) {
-                $restricted_report_info[] = $report;
+            if($this->is_accessable_by($report, $user) 
+               and $report['report_config_complete'] == REPORT_COMPLETE)
+            {
+                $available_reports[] = $report;
             }
         }
 
         return $this->render('report_list.html', array(
-            'reports' => $restricted_report_info,
+            'reports' => $available_reports,
             'PID' => $this->GET['pid']
         ));
     }

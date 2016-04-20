@@ -3,6 +3,9 @@ require_once(FRAMEWORK_ROOT.'PluginController.php');
 require_once('ReportController.php');
 
 
+/**
+ * Execute the report SQL and display the results.
+ */
 class ViewReportController extends ReportController {
 
     protected function handleGET() {
@@ -70,6 +73,10 @@ class ViewReportController extends ReportController {
         }
     }
 
+    /**
+    * Given a string containing REDCap piping syntax, and relevant record data,
+    * replace field references with the relavent record value.
+    */
     private function replace_labels_with_values($text, $fields) {
         $pattern = '\[[0-9a-zA-Z_]*]\[[0-9a-zA-Z_]*]|\[[0-9a-zA-Z_]*]';
         preg_match_all('/'.$pattern.'/U', $text, $matches);
