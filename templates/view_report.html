@@ -12,14 +12,14 @@
         {% endfor %}
         </tr>
     </thead>
-        <tbody>
-        {% for row in results %}
-            <tr class="{{ cycle(['odd', 'even'], loop.index0) }}">
-            {% for field in row %}
-                <td>{{ field }}</td>
-            {% endfor %}
-            </tr>
+    <tbody>
+    {% for row in results %}
+        <tr class="{{ cycle(['odd', 'even'], loop.index0) }}">
+        {% for field in row %}
+            <td>{{ field }}</td>
         {% endfor %}
+        </tr>
+    {% endfor %}
     </tbody>
 </table>
 {% endif %}
