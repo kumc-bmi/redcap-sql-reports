@@ -44,12 +44,13 @@ class ViewReportController extends ReportController {
             $results = array();
             foreach($prelim_results as $prelim_result) {
                 $prelim_result['__GROUPID__'] = $user_info['group_id'];
-                $formatted_sql = $this->replace_labels_with_values(
+                list($formatted_sql, $bind_params) = $this->prep_query(
                     $report_info['report_sql'],
                     $prelim_result
                 );
                 $results[$prelim_result['table_title']] = $this->execute_query(
-                    $formatted_sql
+                    $formatted_sql,
+                    $bind_params
                 );
             }
             return $this->render('view_sub_reports.html', array(
@@ -59,11 +60,11 @@ class ViewReportController extends ReportController {
             ));
         // 4b. Only Report SQL
         } else {
-            $formatted_sql = $this->replace_labels_with_values(
+            list($formatted_sql, $bind_params) = $this->prep_query(
                 $report_info['report_sql'],
                 array('__GROUPID__'=>$user_info['group_id'])
             );
-            $results = $this->execute_query($formatted_sql);
+            $results = $this->execute_query($formatted_sql, $bind_params);
 
             return $this->render('view_report.html', array(
                 'report' => $report_info,
@@ -74,27 +75,36 @@ class ViewReportController extends ReportController {
     }
 
     /**
-    * Given a string containing REDCap piping syntax, and relevant record data,
-    * replace field references with the relavent record value.
-    */
-    private function replace_labels_with_values($text, $fields) {
+     * Given a SQL statement containing REDCap piping syntax, and relevant 
+     * report record data, generate matching prepare statement and bind 
+     * parameters.
+     */
+    private function prep_query($sql, $fields) {
         $pattern = '\[[0-9a-zA-Z_]*]\[[0-9a-zA-Z_]*]|\[[0-9a-zA-Z_]*]';
-        preg_match_all('/'.$pattern.'/U', $text, $matches);
+        preg_match_all('/'.$pattern.'/U', $sql, $matches);
         $matches = array_unique($matches);
+        $bind_params = array();
         foreach($matches[0] as $match) {
-            $text = str_replace(
+            // Replace [match] with ?
+            $sql = str_replace(
                 $match,
-                $fields[substr($match,1,-1)],
-                $text
+                '?',
+                $sql
             );
+            
+            // Add match value to bind list
+            $bind_params[] = $fields[substr($match,1,-1)];
         }
-        return $text;
+
+        $bind_pattern = str_repeat('s', count($bind_params));
+        array_unshift($bind_params, $bind_pattern);
+        
+        return array($sql, $bind_params);
     }
 
     /*
-     * TODO: This was hijacked directly from framework/ProjectModel.php and
-     * probably doesn't belong here in the long run, but it's a private method
-     * in ProjectModel and probably should remain that way.
+     * Given a prepared statement and bind parameters execute the given query,
+     * returning the formatted the result set.
      */
     private function execute_query($query, $bind_params) {
 
