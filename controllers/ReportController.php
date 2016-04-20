@@ -26,7 +26,7 @@ class ReportController extends PluginController {
         $user['group_id'] = $user_rights[$username]['group_id'];
         if ($user_rights[$username]['group_id']) {
             $user['group'] = REDCap::getGroupNames(
-                False,
+                True,
                 $user_rights[$username]['group_id']
             );
         } else {
