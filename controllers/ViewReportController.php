@@ -1,12 +1,12 @@
 <?php
 require_once(FRAMEWORK_ROOT.'PluginController.php');
-require_once('ReportController.php');
+require_once('ReportAccessController.php');
 
 
 /**
  * Execute the report SQL and display the results.
  */
-class ViewReportController extends ReportController {
+class ViewReportController extends ReportAccessController {
 
     protected function handleGET() {
         require_once(FRAMEWORK_ROOT.'ProjectModel.php');

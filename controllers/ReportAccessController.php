@@ -5,7 +5,7 @@ require_once(FRAMEWORK_ROOT.'PluginController.php');
  * Provides other SQL Report plugin controllers with shared access control 
  * methods.
  */
-class ReportController extends PluginController {
+class ReportAccessController extends PluginController {
 
     private $AS_OR = 0;
     private $AS_AND = 1;
@@ -50,9 +50,7 @@ class ReportController extends PluginController {
         $mrc = $this->meets_constraint($user, $report, 'role');
         $mgc = $this->meets_constraint($user, $report, 'group');
 
-        if(isset($report['handle_as']) 
-            and $report['handle_as'] == $this->AS_OR) 
-        {
+        if($this->or_constraints_together($report)) {
             return ($muc or $mrc or $mgc);
         } else {
             return ($muc and $mrc and $mgc);
@@ -71,18 +69,36 @@ class ReportController extends PluginController {
      * @param string $type user, role, group 
      */
     protected function meets_constraint($user, $report, $type) {
-        if(isset($report[$type.'_access'])) { // User constraint exists
+        if(isset($report[$type.'_access'])) { // constraint exists
             $users = explode("\n", $report[$type.'_access']);
             $users = array_map(trim, $users);
-            $meets_constraint =  in_array($user[$type], $users);
-        } elseif(isset($report['handle_as']) 
-            and $report['handle_as'] == $this->AS_OR)
-        {
-            $meets_constraint = False;
-        } else {
-            $meets_constraint = True;
+            return in_array($user[$type], $users);
+        } else { // constraint does not exist
+            /**
+             * If the constraint does not exist we want to return a boolean
+             * value that doesn't affect the combined result.  Therefore,
+             * if constraints are to be ORed together we wanted to return FALSE
+             * and if constraints are to be ANDed together we want to return
+             * TRUE.
+             *
+             * <boolean> AND TRUE = <boolean>
+             * <boolean> OR FALSE = <boolean>
+             */
+            return !$this->or_constraints_together($report);
         } 
-        return $meets_constraint;
+    }
+
+    /**
+     * Returns TRUE if the given report array has a handle_as key and that key 
+     * equals the class constant AS_OR.
+     */
+    protected function or_constraints_together($report) {
+        if(isset($report['handle_as']) and $report['handle_as'] == $this->AS_OR)
+        {
+            return True;
+        } else { // Default: AND
+            return False;
+        }
     }
 }
 ?>

@@ -30,13 +30,11 @@ PLUGIN STRUCTURE
 This plugin used the KUMC REDCap Plugin Framework, which is a lightweight MVC 
 framework specific to creating REDCap Plugins.
 
- * config.ini: Contains plugin configuration.
-
- * config.ini.sample: Contains plugin configuration file structure with
-   needed parameters.
+ * config.ini: Contains plugin configuration.  Use config.ini.example as a 
+   template.
 
  * controllers/: This directory holds controller object files which handle
-   plugin specific HTTP requests.  Controller objects should interit from the
+   plugin specific HTTP requests.  Controller objects should inherit from the
    PluginController object found in <framework-root>/PluginController.php.
 
  * index.php: This file contains the "glue" that connects the rest of the
@@ -45,6 +43,9 @@ framework specific to creating REDCap Plugins.
  * routes.php: The file routes HTTP requests to the appropriate controller.
 
  * README: This file.
+
+ * report_config_dd.csv: A REDCap data-dictionary defining a project by which to
+   configure SQL reports.
 
  * templates/: Holds Twig template files, which contain a combination of HTML
    and template display logic.
@@ -74,16 +75,19 @@ Installation of this plugin consists of the following steps:
  2. Clone the KUMC repower-redcap-plugin into the <redcap-root>/plugins
     directory.  Create the plugins directory if necessary.
 
+ 3. Create a new REDCap project using the report_config_dd.csv data-dictionary 
+    file.  This project will allow user with rights to the project to define
+    SQL Reports.
+
 
 CONFIGURATION
 -------------
 To configure the plugin:
 
- 1. Copy <plugin-root>/config.ini.sample to <plugin-root>/config.ini.
+ 1. Copy <plugin-root>/config.ini.example to <plugin-root>/config.ini.
 
- 2. Set the configuration parameters to those relevant to the local
-    installation.  If unsure of parameter values, check the development
-    environment configuration on development environment.
+ 2. Set the report_config_pid value to the REDCap project id of the project
+    created in step 3 of the installation. 
 
 
 MAINTAINERS

@@ -1,6 +1,6 @@
 <?php
 require_once(FRAMEWORK_ROOT.'PluginController.php');
-require_once('ReportController.php');
+require_once('ReportAccessController.php');
 
 define('REPORT_COMPLETE', 2);
 
@@ -8,7 +8,7 @@ define('REPORT_COMPLETE', 2);
 /**
  * Retrieve a list of SQL Reports available to this user.
  */
-class ListReportsController extends ReportController {
+class ListReportsController extends ReportACCessController {
 
     protected function handleGET() {
         require_once(FRAMEWORK_ROOT.'ProjectModel.php');
