@@ -1,58 +1,39 @@
-CONTENTS
---------
- * Copyright
- * Introduction
- * Plugin Structure
- * Requirements
- * Installation
- * Configuration
- * Maintainers
+# REDCap SQL Reports Plugin
 
-
-COPYRIGHT
----------
-Copyright (c) 2015 University of Kansas Medical Center
-
-
-INTRODUCTION
-------------
+### INTRODUCTION
 This custom REDCap plugin was developed to meet the inter-project reporting
 needs of the RE-POWER study, but was designed in a generalizable way, so that it
 could easily be used in other cases as well.
 
 The plugin allows for reports to be generated using SQL by defining report in a
-SQL Report Configuration REDCap project (defined in data_dictionary.csv).
+SQL Report Configuration REDCap project (defined in `data_dictionary.csv`).
 Details on configuring reports are contained in REDCap project.
 
-
-PLUGIN STRUCTURE
-----------------
+### PLUGIN STRUCTURE
 This plugin used the KUMC REDCap Plugin Framework, which is a lightweight MVC 
 framework specific to creating REDCap Plugins.
 
- * config.ini: Contains plugin configuration.  Use config.ini.example as a 
+ * `config.ini`: Contains plugin configuration.  Use `config.ini.example` as a 
    template.
 
- * controllers/: This directory holds controller object files which handle
+ * `controllers/``: This directory holds controller object files which handle
    plugin specific HTTP requests.  Controller objects should inherit from the
-   PluginController object found in <framework-root>/PluginController.php.
+   PluginController object found in ``<framework-root>/PluginController.php`.
 
- * index.php: This file contains the "glue" that connects the rest of the
+ * `index.php`: This file contains the "glue" that connects the rest of the
    plugin code with REDCap code.
 
- * routes.php: The file routes HTTP requests to the appropriate controller.
+ * `routes.php`: The file routes HTTP requests to the appropriate controller.
 
- * README: This file.
+ * `README.md`: This file.
 
- * report_config_dd.csv: A REDCap data-dictionary defining a project by which to
+ * `report_config_dd.csv`: A REDCap data-dictionary defining a project by which to
    configure SQL reports.
 
- * templates/: Holds Twig template files, which contain a combination of HTML
+ * `templates/``: Holds Twig template files, which contain a combination of HTML
    and template display logic.
 
-
-REQUIREMENTS
-------------
+### REQUIREMENTS
 This plugin requires the following to work correctly:
 
  * The redcap_connect.php file from the REDCap base install is required and
@@ -64,33 +45,28 @@ This plugin requires the following to work correctly:
    (including RestCallRequest.php which was obtained via the REDCap API PHP
    sample code).
 
-
-INSTALLATION
-------------
+### INSTALLATION
 Installation of this plugin consists of the following steps:
 
- 1. Make sure that the redcap_connect.php file described above is present in
+ 1. Make sure that the `redcap_connect.php` file described above is present in
     the local REDCap installation's root directory.
 
- 2. Clone the KUMC repower-redcap-plugin into the <redcap-root>/plugins
+ 2. Clone the KUMC repower-redcap-plugin into the ``<redcap-root>/plugins`
     directory.  Create the plugins directory if necessary.
 
- 3. Create a new REDCap project using the report_config_dd.csv data-dictionary 
+ 3. Create a new REDCap project using the `report_config_dd.csv` data-dictionary 
     file.  This project will allow user with rights to the project to define
     SQL Reports.
 
 
-CONFIGURATION
--------------
+### CONFIGURATION
 To configure the plugin:
 
- 1. Copy <plugin-root>/config.ini.example to <plugin-root>/config.ini.
+ 1. Copy ``<plugin-root>/config.ini.example` to ``<plugin-root>/config.ini`.
 
- 2. Set the report_config_pid value to the REDCap project id of the project
+ 2. Set the r`eport_config_pid value` to the REDCap project id of the project
     created in step 3 of the installation. 
 
-
-MAINTAINERS
------------
+### MAINTAINERS
 Current maintainers:
- * Michael Prittie (mprittie@kumc.edu)
+ * Michael Prittie <mprittie@kumc.edu>
