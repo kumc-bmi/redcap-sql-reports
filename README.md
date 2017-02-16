@@ -16,7 +16,7 @@ framework specific to creating REDCap Plugins.
  * `config.ini`: Contains plugin configuration.  Use `config.ini.example` as a 
    template.
 
- * `controllers/``: This directory holds controller object files which handle
+ * `controllers/`: This directory holds controller object files which handle
    plugin specific HTTP requests.  Controller objects should inherit from the
    PluginController object found in ``<framework-root>/PluginController.php`.
 
@@ -30,7 +30,7 @@ framework specific to creating REDCap Plugins.
  * `report_config_dd.csv`: A REDCap data-dictionary defining a project by which to
    configure SQL reports.
 
- * `templates/``: Holds Twig template files, which contain a combination of HTML
+ * `templates/`: Holds Twig template files, which contain a combination of HTML
    and template display logic.
 
 ### REQUIREMENTS
@@ -51,7 +51,7 @@ Installation of this plugin consists of the following steps:
  1. Make sure that the `redcap_connect.php` file described above is present in
     the local REDCap installation's root directory.
 
- 2. Clone the KUMC repower-redcap-plugin into the ``<redcap-root>/plugins`
+ 2. Clone the KUMC repower-redcap-plugin into the `<redcap-root>/plugins`
     directory.  Create the plugins directory if necessary.
 
  3. Create a new REDCap project using the `report_config_dd.csv` data-dictionary 
@@ -62,9 +62,9 @@ Installation of this plugin consists of the following steps:
 ### CONFIGURATION
 To configure the plugin:
 
- 1. Copy ``<plugin-root>/config.ini.example` to ``<plugin-root>/config.ini`.
+ 1. Copy `<plugin-root>/config.ini.example` to `<plugin-root>/config.ini`.
 
- 2. Set the r`eport_config_pid value` to the REDCap project id of the project
+ 2. Set the `report_config_pid value` to the REDCap project id of the project
     created in step 3 of the installation. 
 
 ### MAINTAINERS
